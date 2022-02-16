@@ -1,0 +1,23 @@
+{
+  "scripts": {
+    "start": "tsc && node ./dist/app.js",
+    "build": "tsc",
+    "dev": "nodemon -e ts --exec \"npm run start\""
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.4",
+    "@types/koa-bodyparser": "^4.3.5",
+    "@types/koa-router": "^7.4.4",
+    "@types/mongodb": "^4.0.7",
+    "nodemon": "^2.0.15",
+    "tsc-watch": "^4.6.0",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^10.1.1",
+    "mongodb": "^4.3.1"
+  }
+}
