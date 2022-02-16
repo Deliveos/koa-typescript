@@ -18,7 +18,7 @@ export class UserController {
   }
 
   static async getOne(ctx: Context) {
-    const user = await collection.findOne({ "_id": new ObjectId("620b926a9991d4f754be5dec") });
+    const user = await collection.findOne({ "_id": new ObjectId(ctx.params.id) });
     ctx.body = user;
   }
 
