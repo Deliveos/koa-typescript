@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "tsc && node ./dist/app.js",
+    "start": "node ./dist/app.js",
     "build": "tsc",
     "dev": "nodemon -e ts --exec \"npm run start\""
   },
