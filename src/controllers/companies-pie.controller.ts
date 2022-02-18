@@ -42,7 +42,6 @@ export class HomeController {
       const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": res[i].Company },});
       res[i]['CompanyName'] = CompanyName?.Name;
     }
-
         
     ctx.body = res;
   }
