@@ -6,8 +6,8 @@ import ordersRoute from './orders.route';
 
 const router = new Router();
 
-router.use(usersRoute.routes());
 router.use(eventsRoute.routes());
 router.use(ordersRoute.routes());
+router.use(usersRoute.routes());
 
 export default router;
