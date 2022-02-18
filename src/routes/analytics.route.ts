@@ -1,9 +1,9 @@
 import Router from 'koa-router';
-import { HomeController } from '../controllers/home.controller';
+import { HomeController } from '../controllers/analytics.controller';
 
 const router = new Router();
 
-router.prefix('/orders');
+router.prefix('/analytics');
 
 // Get
 router.get('/', HomeController.getAll);

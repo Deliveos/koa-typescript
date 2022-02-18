@@ -9,7 +9,8 @@ export class EventsController {
 
   // Read
   static async getAll(ctx: Context) {   
-    const events = collection.find().limit(10);
+    var page = ctx.params.page;
+    const events = collection.find().limit(10).skip(page);
     const res = await events.toArray();
     
     ctx.body = res;
@@ -42,7 +43,8 @@ export class EventsController {
       { 
         $set: {
         "email": email as string,
-        "name": name as string
+        "name": name as string,
+        "role": "client"
         }
       }
     );
