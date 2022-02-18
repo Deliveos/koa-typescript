@@ -8,15 +8,9 @@ const collection = database.collection("events");
 export class EventsController {
 
   // Read
-  static async getAll(ctx: Context) {
-    var databasesList = await client.db().admin().listDatabases();
- 
-    console.log("Databases:");
-    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-    
-    const events = database.collection('events').find();
+  static async getAll(ctx: Context) {   
+    const events = collection.find().limit(10);
     const res = await events.toArray();
-    console.log(res);
     
     ctx.body = res;
   }
