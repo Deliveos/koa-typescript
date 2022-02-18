@@ -5,7 +5,7 @@ import eventsRoute from './events.route';
 
 const router = new Router();
 
-router.use(usersRoute.routes());
 router.use(eventsRoute.routes());
+router.use(usersRoute.routes());
 
 export default router;
