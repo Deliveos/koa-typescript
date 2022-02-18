@@ -22,32 +22,6 @@ export class HomeController {
           "type": {"$max": "$type"},
         } 
       },
-      // {
-      //   $addFields: {
-      //     countFailed: {
-      //       $cond: [
-      //         {
-      //           $eq: ["$type", event_typeFail],
-      //         },
-      //         false,
-      //         true
-      //       ]
-      //     }
-      //   }
-      // },
-      // {
-      //   $addFields: {
-      //     countSuccess: {
-      //       $cond: [
-      //         {
-      //           $eq: ["$type", event_typeSuccess]
-      //         },
-      //         false,
-      //         true
-      //       ]
-      //     }
-      //   }
-      // },
       {
         $match: {
           "type": event_typeSuccess?.name,
@@ -56,20 +30,18 @@ export class HomeController {
       { 
         $group: {
           "_id": { "id": "$Company" },
-          "CompanyName": { "$max": await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": "$Company" }}) },
           "countSuccess": { "$sum": 1 },
           // "countFailed": { "$sum": "$countFailed" },
         } 
       },
     ]);
 
-    const res = await ordersByCompanySuccess.toArray();
-    res.forEach(async (item) => {
-      item.CompanyName = (await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": item._id.id },}))?.Name;
-    })
-    
-    await database.collection('deliveryCompanies').find().toArray();
-    
+    var res = await ordersByCompanySuccess.toArray();
+
+    res.forEach(async (item: any) => {      
+      item['CompanyName'] = (await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": item._id.id },}))?.Name;
+    });
+        
     ctx.body = res;
   }
 

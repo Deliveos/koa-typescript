@@ -3,7 +3,7 @@ import Router from 'koa-router';
 import usersRoute from './users.route';
 import eventsRoute from './events.route';
 import ordersRoute from './orders.route';
-import ananlyticsRoute from './analytics.route';
+import ananlyticsRoute from './companies-pie.route';
 import companiesRoute from './deliveryCompanies.route';
 import registerRoute from './register.route';
 import loginRoute from './login.route';
