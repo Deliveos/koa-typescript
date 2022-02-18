@@ -7,40 +7,43 @@ import { User } from "../models/user.model";
 const database = client.db("Q-Delivery")
 const collection = database.collection("events");
 
-export class CompaniesPieController {
+export class PeriodsController {
 
   // Read
   static async getAll(ctx: Context) {
     var event_typeSuccess = await database.collection<EventType>('event_types').findOne({ "index": 6 });
-    var event_typeFail = await database.collection<EventType>('event_types').findOne({ "index": 7 });
+    var currentDate = new Date();
     
     const ordersByCompanySuccess = collection.aggregate([
       { 
         $group: {
           "_id": { "id": "$OrderId.Id" },
           "Company": {"$max": "$DeliveryCompanyId.Id"},
-          "type": { "$max": "$type" },
-          "WeightKg": { "$max": "$WeightKg" },
-          "ExpectingPriceTenge": { "$max": "$ExpectingPriceTenge" },
-          "ExpectingDeliveryDate": { "$max": "$ExpectingDeliveryDate" },
+          "type": { "$first": event_typeSuccess?.name },
           "Date": { "$max": "$Date" },
-          "Client": { "$max": "$ClientId.Id" },
-          "FromLocationId": { "$max": "$FromLocationId" },
-          "ToLocationId": { "$max": "$ToLocationId" },
         },
       },
       {
-        $match: {
-          "type": event_typeSuccess?.name,
+        $project: {
+          _id: true,
+          Company: true,
+          Date: true,
+          isBetween: {
+            $and: [{
+              $lt: [
+                new Date("$Date"),
+                currentDate
+              ]
+            },
+            {
+              $gt: [
+                new Date("$Date"),
+                currentDate.setMonth(currentDate.getMonth() - 1)
+              ]
+            }]
+          }
         }
-      },
-      { 
-        $group: {
-          "_id": { "id": "$Company" },
-          "countSuccess": { "$sum": 1 },
-          // "countFailed": { "$sum": "$countFailed" },
-        } 
-      },
+      }
     ]);
 
     var res = await ordersByCompanySuccess.toArray();
@@ -51,10 +54,5 @@ export class CompaniesPieController {
     }
         
     ctx.body = res;
-  }
-
-  static async getOne(ctx: Context) {
-    const user = await collection.findOne({ "_id": new ObjectId(ctx.params.id) });
-    ctx.body = user;
   }
 }
