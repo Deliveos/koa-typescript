@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { ObjectId } from "mongodb";
+import { ObjectId, Timestamp } from "mongodb";
 import {client} from "../config/db.config";
 import { User } from "../models/user.model";
 
@@ -20,6 +20,21 @@ export class UserController {
   static async getOne(ctx: Context) {
     const user = await collection.findOne({ "_id": new ObjectId(ctx.params.id) });
     ctx.body = user;
+  }
+
+  // Write
+  static async insertOne(ctx: Context) {
+    const { Name, Role, Password } = ctx.request.body;
+    const result = await collection.insertOne({
+      "_id": null,
+      "Name": Name as string,
+      "Role": Role as string,
+      "Password": Password as string,
+      "Date": Timestamp.fromNumber(Date.now())
+    });
+    if (result.insertedId !== undefined && result !== null) {
+      ctx.status = 201;
+    }
   }
 
   static async updateOne(ctx: Context) {

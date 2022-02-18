@@ -1,22 +1,22 @@
 import { Context } from 'koa';
 import Router from 'koa-router';
 import { client } from '../config/db.config';
-import { User } from '../models/user.model';
 import jwt, { Secret } from 'jsonwebtoken';
+import { Client } from '../models/client.model';
 
 const router = new Router();
 
 const database = client.db("Q-Delivery");
-const collection = database.collection<User>("users");
+const clients = database.collection<Client>("clients");
 
 router.prefix('/register');
 
 router.post('/', async (ctx: Context) => {
   const { Name, Role, Password } = ctx.request.body;
-  const result = await collection.insertOne({
+  const result = await clients.insertOne({
     "Name": Name as string,
-    "Role": Role as string || "user",
-    "Password": Password as string
+    "Password": Password as string,
+    "Date": Date.now().toString()
   });
   if (result.insertedId !== null && result.insertedId !== undefined) {
     ctx.status = 201;
