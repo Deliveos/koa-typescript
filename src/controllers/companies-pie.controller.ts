@@ -36,8 +36,40 @@ export class HomeController {
       },
     ]);
 
-    var res = await ordersByCompanySuccess.toArray();
+    const ordersByCompanyFail = collection.aggregate([
+      { 
+        $group: {
+          "_id": { "id": "$OrderId" },
+          "Company": {"$max": "$DeliveryCompanyId.Id"},
+          "type": {"$max": "$type"},
+        } 
+      },
+      {
+        $match: {
+          "type": event_typeFail?.name,
+        }
+      },
+      { 
+        $group: {
+          "_id": { "id": "$Company" },
+          "countFails": { "$sum": 1 },
+          // "countFailed": { "$sum": "$countFailed" },
+        } 
+      },
+    ]);
 
+    var res = await ordersByCompanySuccess.toArray();
+    var fails = await ordersByCompanyFail.toArray();
+
+    res.map((doc) => {
+      for (let i = 0; i < fails.length; i++) {
+        if (doc._id.id === fails[i]._id.id) {
+          doc['countFails'] = fails[i].countFails
+          doc['failId'] = fails[i]._id.id
+        }        
+      }
+
+    });
 
     for (let i = 0; i < res.length; i++) {
       const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": res[i]._id.id },});
