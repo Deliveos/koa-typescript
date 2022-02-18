@@ -27,7 +27,8 @@ export class UserController {
     const {email, name} = ctx.request.body;
     const result = await collection.insertOne({
       "email": email as string,
-      "name": name as string
+      "name": name as string,
+      "role": "client"
     });
     if (result.insertedId !== undefined && result !== null) {
       ctx.status = 201;
