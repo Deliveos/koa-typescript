@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { ObjectId } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import { client } from "../config/db.config";
 import { User } from "../models/user.model";
 
@@ -10,15 +10,21 @@ export class HomeController {
 
   // Read
   static async getAll(ctx: Context) {
-    const users = collection.aggregate([ 
-      { 
-        $group: {
-          "_id": { $first: "$DeliveryCompanyId" } 
-        } 
-      }
-    ]);
-    const res = await users.toArray();
-    console.log(res);
+    const ordersByCompany = collection.aggregate([
+      {
+        $match: {
+          "type": { $regex: "OrderFulfillmentEvent" },
+          "date": { $lte: new Date() }
+        }
+      },
+      // { 
+      //   $group: {
+      //     "_id": { "id": "$DeliveryCompanyId" },
+      //     "count": { "$sum": 1 }
+      //   } 
+      // }
+    ]).limit(10);
+    const res = await ordersByCompany.toArray();
     
     ctx.body = res;
   }

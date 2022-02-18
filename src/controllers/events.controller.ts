@@ -1,6 +1,7 @@
 import { Context } from "koa";
 import { ObjectId } from "mongodb";
 import { client } from "../config/db.config";
+import { EventType } from "../models/event_types.model";
 
 const database = client.db("Q-Delivery")
 const collection = database.collection("events");
@@ -9,8 +10,13 @@ export class EventsController {
 
   // Read
   static async getAll(ctx: Context) {   
-    var page = ctx.params.page;
-    const events = collection.find().limit(10).skip(page);
+    var page = ctx.request.query.page;
+    var typeIndex = ctx.request.query.type;
+    var event_type = await database.collection<EventType>('event_types').findOne({ "index": Number.parseInt(typeIndex as string) });
+    
+    const events = collection.find({
+          "type": event_type?.name
+    }).limit(10).skip(Number.parseInt(page as string));
     const res = await events.toArray();
     
     ctx.body = res;
