@@ -9,11 +9,8 @@ export class EventsController {
 
   // Read
   static async getAll(ctx: Context) {
-    const events = collection.find();
-    const res = await events.toArray();
-    console.log(res);
-    
-    ctx.body = res;
+    const events = await collection.find().toArray();
+    ctx.body = events;
   }
 
   static async getOne(ctx: Context) {
