@@ -1,17 +1,17 @@
 import { Context } from "koa";
-import { ObjectId } from "mongodb";
-import {client} from "../config/db.config";
-import { User } from "../models/user.model";
+import { Int32, ObjectId } from "mongodb";
+import { client } from "../config/db.config";
+import { DeliveryCompany } from "../models/deliveryCompany.model";
 
 const database = client.db("q-delivery");
-const collection = database.collection<User>("users");
+const collection = database.collection<DeliveryCompany>("deliveryCompanies");
 
-export class UserController {
+export class DeliveryCompaniesController {
 
   // Read
   static async getAll(ctx: Context) {
-    const users = collection.find();
-    const res = await users.toArray();
+    const events = collection.find();
+    const res = await events.toArray();
     console.log(res);
     
     ctx.body = res;
@@ -24,11 +24,18 @@ export class UserController {
 
   // Write
   static async insertOne(ctx: Context) {
-    const {email, name} = ctx.request.body;
-    const result = await collection.insertOne({
-      "email": email as string,
-      "name": name as string
-    });
+    const {Name, Date} = ctx.request.body;
+    const Id = ctx.request.body.DeliveryCompanyId.Id as Int32;
+    const result = await collection.insertOne(
+      {
+        _id: null,
+        DeliveryCompanyId: {
+          Id: Id
+        },
+        "Name": Name as string,
+        "Date": Date as string
+      }
+    );
     if (result.insertedId !== undefined && result !== null) {
       ctx.status = 201;
     }
