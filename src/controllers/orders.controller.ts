@@ -5,7 +5,7 @@ import { client } from "../config/db.config";
 const database = client.db("q-delivery")
 const collection = database.collection("events");
 
-export class EventsController {
+export class OrdersController {
 
   // Read
   static async getAll(ctx: Context) {
