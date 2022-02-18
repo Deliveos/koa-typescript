@@ -3,11 +3,8 @@ import Koa from 'koa';
 import router from './routes';
 import  bodyParser from 'koa-bodyparser';
 import cors from 'koa-cors';
-
 import { config } from './config/env.config';
 import { connectDB } from './config/db.config';
-
-// REQUIRES
 
 // APPS
 const app = new Koa();
