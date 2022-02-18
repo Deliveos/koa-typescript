@@ -58,15 +58,27 @@ export class HomeController {
       },
     ]);
 
-    var res = await ordersByCompanyFails.toArray();
+    var Success = await ordersByCompanySuccess.toArray();
+    var Fails = await ordersByCompanyFails.toArray();
 
-    for (let i = 0; i < res.length; i++) {
-      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": res[i].Company },});
+
+    Success.map((doc) => {
+      for (let i = 0; i < Fails.length; i++) {
+        if(Fails[i]._id.id === doc._id.id) {
+          doc['countFails'] = Fails[i].countFails
+        }
+        doc['ids'] = {FailId: Fails[i]._id.id, SuccessId: doc._id.id} ;
+      }
       
-      res[i]['CompanyName'] = CompanyName?.Name;
+    });
+
+    for (let i = 0; i < Success.length; i++) {
+      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": Success[i].Company },});
+      
+      Success[i]['CompanyName'] = CompanyName?.Name;
     }
         
-    ctx.body = res;
+    ctx.body = Success;
   }
 
   static async getOne(ctx: Context) {
