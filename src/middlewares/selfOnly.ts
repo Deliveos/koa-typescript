@@ -1,12 +1,11 @@
 import {Context, Next} from 'koa';
-import jwt, { Secret } from 'jsonwebtoken';
+import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 
 const selfOnly = async (ctx: Context, next: Next) => {
   if(ctx.header.authorization !== undefined) {
-    const jwtString =  jwt.verify(ctx.header.authorization, process.env.SECRET_KEY as Secret) as string;
-    const decodedToken = JSON.parse(jwtString);
-    if (decodedToken.Id == ctx.params.id) {
-      next();
+    const token =  jwt.verify(ctx.header.authorization, process.env.SECRET_KEY as Secret) as JwtPayload;
+    if (token.Id == ctx.params.id || token.Role.toLowerCase() == 'admin') {
+      await next();
     } else {
       ctx.status = 403;
     }

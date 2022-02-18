@@ -13,10 +13,9 @@ const adminOnly = async (ctx: Context, next: Next) => {
       const users = database.collection<User>("users");
       const user = await users.findOne({ _id: new ObjectId(token.Id), Name: token.Name })
       if (user !== null && user.Role.toLowerCase() === "admin") {
-        console.log("NEXT");
+        logger.info(`Admin ${token.Name} was successfully verified`);
         await next();
       } else {
-        console.log(403);
         ctx.status = 403;
       }
     } catch (e) {
