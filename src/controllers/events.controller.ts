@@ -22,7 +22,6 @@ export class EventsController {
         $group: {
           "_id": { "id": "$OrderId.Id" },
           "Company": {"$max": "$DeliveryCompanyId.Id"},
-          "CompanyName": { "$max": await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": "$Company" }})},
           "type": { "$first": event_type?.name },
           "WeightKg": { "$max": "$WeightKg" },
           "ExpectingPriceTenge": { "$max": "$ExpectingPriceTenge" },
@@ -38,22 +37,13 @@ export class EventsController {
           "type": event_type?.name
         }
       },
-      // {
-      //   $addFields: {
-      //     CompanyName: ""
-      //   }
-      // },
-      // {
-      //   $addFields: {
-      //     ClientName: ""
-      //   }
-      // }
     ]).limit(elementsOnPage).skip(Number.parseInt(page as string)-1);
-    const res = await events.toArray();
+    var res = await events.toArray();
 
-    res.forEach(async (item) => {      
-      item.CompanyName = (await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": "$Company" },}))?.Name;
-      item.ClientName = (await database.collection('clients').findOne({ "ClientId": { "Id": "$Client" },}))?.Name;
+    res.forEach(async (item) => {
+      item['CompanyName'] = (await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": "$Company" },}))?.Name;
+      item['ClientName'] = (await database.collection('clients').findOne({ "ClientId": { "Id": "$Client" },}))?.Name;
+      return item;
     })
 
     const allData = await collection.aggregate([
