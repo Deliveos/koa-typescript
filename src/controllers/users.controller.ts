@@ -24,7 +24,7 @@ export class UserController {
     const { Name, Role, Password } = ctx.request.body;
     const date = new Date();
     date.setDate(date.getDate() - 1);
-    date.setHours(0,0,0,0);
+    date.setHours(0,0,0);
 
     const result = await collection.insertOne({
       "_id": null,
