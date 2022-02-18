@@ -13,10 +13,14 @@ router.prefix('/register');
 
 router.post('/', async (ctx: Context) => {
   const { Name, Role, Password } = ctx.request.body;
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  date.setHours(0,0,0,0);
+
   const result = await clients.insertOne({
     "Name": Name as string,
     "Password": Password as string,
-    "Date": Date.now().toString()
+    "Date": date.toISOString()
   });
   if (result.insertedId !== null && result.insertedId !== undefined) {
     ctx.status = 201;

@@ -22,12 +22,16 @@ export class UserController {
   // Write
   static async insertOne(ctx: Context) {
     const { Name, Role, Password } = ctx.request.body;
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    date.setHours(0,0,0,0);
+
     const result = await collection.insertOne({
       "_id": null,
       "Name": Name as string,
       "Role": Role as string,
       "Password": Password as string,
-      "Date": Timestamp.fromNumber(Date.now())
+      "Date": date.toISOString()
     });
     if (result.insertedId !== undefined && result !== null) {
       ctx.status = 201;

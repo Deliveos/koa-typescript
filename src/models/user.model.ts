@@ -5,5 +5,5 @@ export interface User {
   Name: string;
   Role: string;
   Password: string;
-  Date: Timestamp;
+  Date: string;
 }
