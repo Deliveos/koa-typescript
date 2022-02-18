@@ -38,9 +38,11 @@ export class HomeController {
 
     var res = await ordersByCompanySuccess.toArray();
 
-    res.forEach(async (item: any) => {      
-      item['CompanyName'] = (await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": item._id.id },}))?.Name;
-    });
+    for (let i = 0; i < res.length; i++) {
+      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": res[i].Company },});
+      res[i]['CompanyName'] = CompanyName?.Name;
+    }
+
         
     ctx.body = res;
   }
