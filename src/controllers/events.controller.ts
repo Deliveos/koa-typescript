@@ -40,19 +40,25 @@ export class EventsController {
     ]).limit(elementsOnPage).skip(Number.parseInt(page as string)-1);
     var res = await events.toArray();
 
-    // for (let i = 0; i < res.length; i++) {
-      
-      
-    // }
+    for (let i = 0; i < res.length; i++) {
+      const FromLocation = await database.collection('locations').findOne({ "LocationId": res[i].FromLocationId });
+      const ToLocation = await database.collection('locations').findOne({ "LocationId": res[i].ToLocationId });
+      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": res[i].Company },});
+      const ClientName = await database.collection('clients').findOne({ "ClientId": { "Id": res[i].Client },});
+      res[i]['FromLocationName'] = FromLocation?.Name;
+      res[i]['ToLocationName'] = ToLocation?.Name;
+      res[i]['CompanyName'] = CompanyName?.Name;
+      res[i]['ClientName'] = ClientName?.Name;
+    }
 
-    await res.forEach(async (item: any) => {
-      item['FromLocationName'] = (await database.collection('locations').findOne({ "LocationId": item.FromLocationId }))?.Name;
-      item['ToLocationName'] = (await database.collection('locations').findOne({ "LocationId": item.ToLocationId }))?.Name;
-    });
-    await res.forEach(async (item: any) => {
-      item['CompanyName'] = (await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": item.Company },}))?.Name;
-      item['ClientName'] = (await database.collection('clients').findOne({ "ClientId": { "Id": item.Client },}))?.Name;
-    });
+    // await res.forEach(async (item: any) => {
+    //   item['FromLocationName'] = (await database.collection('locations').findOne({ "LocationId": item.FromLocationId }))?.Name;
+    //   item['ToLocationName'] = (await database.collection('locations').findOne({ "LocationId": item.ToLocationId }))?.Name;
+    // });
+    // await res.forEach(async (item: any) => {
+    //   item['CompanyName'] = (await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": item.Company },}))?.Name;
+    //   item['ClientName'] = (await database.collection('clients').findOne({ "ClientId": { "Id": item.Client },}))?.Name;
+    // });
 
     const allData = await collection.aggregate([
       {
