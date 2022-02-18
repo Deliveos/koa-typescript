@@ -36,49 +36,16 @@ export class HomeController {
       },
     ]);
 
-    const ordersByCompanyFails = collection.aggregate([
-      { 
-        $group: {
-          "_id": { "id": "$OrderId" },
-          "Company": {"$max": "$DeliveryCompanyId.Id"},
-          "type": {"$max": "$type"},
-        } 
-      },
-      {
-        $match: {
-          "type": event_typeFail?.name,
-        }
-      },
-      { 
-        $group: {
-          "_id": { "id": "$Company" },
-          "countFails": { "$sum": 1 },
-          // "countFailed": { "$sum": "$countFailed" },
-        } 
-      },
-    ]);
-
-    var Success = await ordersByCompanySuccess.toArray();
-    var Fails = await ordersByCompanyFails.toArray();
+    var res = await ordersByCompanySuccess.toArray();
 
 
-    Success.map((doc) => {
-      for (let i = 0; i < Fails.length; i++) {
-        if(Fails[i]._id.id === doc._id.id) {
-          doc['countFails'] = Fails[i].countFails
-        }
-        doc['ids'] = {FailId: Fails[i]._id.id, SuccessId: doc._id.id} ;
-      }
+    for (let i = 0; i < res.length; i++) {
+      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": res[i]._id.id },});
       
-    });
-
-    for (let i = 0; i < Success.length; i++) {
-      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": Success[i].Company },});
-      
-      Success[i]['CompanyName'] = CompanyName?.Name;
+      res[i]['CompanyName'] = CompanyName?.Name;
     }
         
-    ctx.body = Success;
+    ctx.body = res;
   }
 
   static async getOne(ctx: Context) {
