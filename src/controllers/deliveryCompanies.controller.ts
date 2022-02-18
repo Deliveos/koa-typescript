@@ -10,11 +10,8 @@ export class CompaniesController {
 
   // Read
   static async getAll(ctx: Context) {
-    const companies = collection.find();
-    const res = await companies.toArray();
-    console.log(res);
-    
-    ctx.body = res;
+    const companies = await collection.find().sort({ Name: 1 }).toArray();
+    ctx.body = companies;
   }
 
   static async getOne(ctx: Context) {
