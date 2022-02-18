@@ -8,7 +8,6 @@ const collection = database.collection<User>("users");
 
 export class UserController {
 
-  // Read
   static async getAll(ctx: Context) {
     ctx.body = await collection.find().toArray();
     ctx.status = 200;
@@ -33,21 +32,22 @@ export class UserController {
       "Password": Password as string,
       "Date": date.toISOString()
     });
-    if (result.insertedId !== undefined && result !== null) {
+    if (result.insertedId !== undefined && result !== null) { 
       ctx.status = 201;
     }
   }
 
   static async updateOne(ctx: Context) {
-    const {email, name} = ctx.request.body;
+    const { Name, Role, Password } = ctx.request.body;
     const result = await collection.updateOne(
       {
         '_id': new ObjectId(ctx.params.id)
       },
       { 
         $set: {
-        "email": email as string,
-        "name": name as string
+          "Name": Name as string,
+          "Role": Role as string,
+          "Password": Password as string
         }
       }
     );
