@@ -2,14 +2,19 @@ import { Context } from "koa";
 import { ObjectId } from "mongodb";
 import { client } from "../config/db.config";
 
-const database = client.db("q-delivery")
+const database = client.db("Q-Delivery")
 const collection = database.collection("events");
 
 export class EventsController {
 
   // Read
   static async getAll(ctx: Context) {
-    const events = collection.find();
+    var databasesList = await client.db().admin().listDatabases();
+ 
+    console.log("Databases:");
+    databasesList.databases.forEach(db => console.log(` - ${db.name}`));
+    
+    const events = database.collection('events').find();
     const res = await events.toArray();
     console.log(res);
     
@@ -17,6 +22,8 @@ export class EventsController {
   }
 
   static async getOne(ctx: Context) {
+    console.log(ctx.params.id);
+    
     const user = await collection.findOne({ "_id": new ObjectId(ctx.params.id) });
     ctx.body = user;
   }

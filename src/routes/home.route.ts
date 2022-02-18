@@ -3,7 +3,7 @@ import { HomeController } from '../controllers/home.controller';
 
 const router = new Router();
 
-router.prefix('/users');
+router.prefix('/orders');
 
 // Get
 router.get('/', HomeController.getAll);
