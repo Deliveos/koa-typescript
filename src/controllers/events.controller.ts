@@ -51,15 +51,6 @@ export class EventsController {
       res[i]['ClientName'] = ClientName?.Name;
     }
 
-    // await res.forEach(async (item: any) => {
-    //   item['FromLocationName'] = (await database.collection('locations').findOne({ "LocationId": item.FromLocationId }))?.Name;
-    //   item['ToLocationName'] = (await database.collection('locations').findOne({ "LocationId": item.ToLocationId }))?.Name;
-    // });
-    // await res.forEach(async (item: any) => {
-    //   item['CompanyName'] = (await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": item.Company },}))?.Name;
-    //   item['ClientName'] = (await database.collection('clients').findOne({ "ClientId": { "Id": item.Client },}))?.Name;
-    // });
-
     const allData = await collection.aggregate([
       {
         $match: {
