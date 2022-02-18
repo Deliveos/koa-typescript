@@ -6,10 +6,12 @@ import ordersRoute from './orders.route';
 import ananlyticsRoute from './analytics.route';
 import companiesRoute from './deliveryCompanies.route';
 import registerRoute from './register.route';
+import loginRoute from './login.route';
 
 const router = new Router();
 
 router.use(registerRoute.routes());
+router.use(loginRoute.routes());
 router.use(eventsRoute.routes());
 router.use(ordersRoute.routes());
 router.use(usersRoute.routes());

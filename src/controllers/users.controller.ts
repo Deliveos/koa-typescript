@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import { ObjectId } from "mongodb";
+import { ObjectId, Timestamp } from "mongodb";
 import {client} from "../config/db.config";
 import { User } from "../models/user.model";
 
@@ -8,13 +8,9 @@ const collection = database.collection<User>("users");
 
 export class UserController {
 
-  // Read
   static async getAll(ctx: Context) {
-    const users = collection.find();
-    const res = await users.toArray();
-    console.log(res);
-    
-    ctx.body = res;
+    ctx.body = await collection.find().toArray();
+    ctx.status = 200;
   }
 
   static async getOne(ctx: Context) {
@@ -22,16 +18,36 @@ export class UserController {
     ctx.body = user;
   }
 
+  // Write
+  static async insertOne(ctx: Context) {
+    const { Name, Role, Password } = ctx.request.body;
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    date.setHours(0,0,0);
+
+    const result = await collection.insertOne({
+      "_id": null,
+      "Name": Name as string,
+      "Role": Role as string,
+      "Password": Password as string,
+      "Date": date.toISOString()
+    });
+    if (result.insertedId !== undefined && result !== null) { 
+      ctx.status = 201;
+    }
+  }
+
   static async updateOne(ctx: Context) {
-    const {email, name} = ctx.request.body;
+    const { Name, Role, Password } = ctx.request.body;
     const result = await collection.updateOne(
       {
         '_id': new ObjectId(ctx.params.id)
       },
       { 
         $set: {
-        "email": email as string,
-        "name": name as string
+          "Name": Name as string,
+          "Role": Role as string,
+          "Password": Password as string
         }
       }
     );

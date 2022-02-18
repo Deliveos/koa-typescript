@@ -1,24 +1,28 @@
 import { Context } from 'koa';
 import Router from 'koa-router';
 import { client } from '../config/db.config';
-import { User } from '../models/user.model';
 import jwt, { Secret } from 'jsonwebtoken';
+import { Client } from '../models/client.model';
 
 const router = new Router();
 
 const database = client.db("Q-Delivery");
-const collection = database.collection<User>("users");
+const clients = database.collection<Client>("clients");
 
 router.prefix('/register');
 
 router.post('/', async (ctx: Context) => {
   const { Name, Role, Password } = ctx.request.body;
-  const result = await collection.insertOne({
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  date.setHours(0,0,0);
+
+  const result = await clients.insertOne({
     "Name": Name as string,
-    "Role": Role as string || "User",
-    "Password": Password as string
+    "Password": Password as string,
+    "Date": date.toISOString()
   });
-  if (result.acknowledged == true) {
+  if (result.insertedId !== null && result.insertedId !== undefined) {
     ctx.status = 201;
     const token = jwt.sign(
       {
@@ -27,7 +31,9 @@ router.post('/', async (ctx: Context) => {
       }, 
       process.env.SECRET_KEY?.toString() as Secret
     );
-    ctx.body = token;
+    ctx.body = { token };
+  } else {
+    ctx.status = 400;
   }
 });
 

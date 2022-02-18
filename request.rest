@@ -1,9 +1,10 @@
-POST http://localhost:5000/users HTTP/1.1 
+POST http://localhost:5000/https://q-delivery.herokuapp.com/regidter HTTP/1.1 
 content-type: application/json
 
 {
-    "name": "Test", 
-    "email": "test@test.com"
+    "Name": "Eduard", 
+    "Role": "admin",
+    "Password": "qweasdzxc"
 }
 
 ###

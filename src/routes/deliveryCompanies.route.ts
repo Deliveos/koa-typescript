@@ -17,4 +17,5 @@ router.patch('/:id', CompaniesController.updateOne);
 
 // Delete
 router.delete('/:id', CompaniesController.deleteOne);
+
 export default router;
