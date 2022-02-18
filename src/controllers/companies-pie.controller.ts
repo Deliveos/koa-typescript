@@ -45,9 +45,11 @@ export class CompaniesPieController {
 
     var res = await ordersByCompanySuccess.toArray();
 
+
     for (let i = 0; i < res.length; i++) {
-      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": res[i]._id.id });
-      res[i]['FromLocationName'] = CompanyName?.Name;
+      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": res[i]._id.id },});
+      
+      res[i]['CompanyName'] = CompanyName?.Name;
     }
         
     ctx.body = res;

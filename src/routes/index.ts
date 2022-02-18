@@ -5,6 +5,7 @@ import eventsRoute from './events.route';
 import ordersRoute from './orders.route';
 import ananlyticsRoute from './companies-pie.route';
 import companiesRoute from './deliveryCompanies.route';
+import companiesPie from './companies-pie.route';
 import registerRoute from './register.route';
 import loginRoute from './login.route';
 import periodsRoute from './periods.route';
@@ -19,5 +20,6 @@ router.use(usersRoute.routes());
 router.use(ananlyticsRoute.routes());
 router.use(companiesRoute.routes());
 router.use(periodsRoute.routes());
+router.use(companiesPie.routes());
 
 export default router;
