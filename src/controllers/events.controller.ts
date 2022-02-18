@@ -2,7 +2,7 @@ import { Context } from "koa";
 import { ObjectId } from "mongodb";
 import {client} from "../config/db.config";
 
-const database = client.db("node_test")
+const database = client.db("q-delivery")
 const collection = database.collection("events");
 
 export class EventsController {
