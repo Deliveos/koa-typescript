@@ -8,7 +8,9 @@ const collection = database.collection<Company>("deliveryCompanies");
 
 export class CompaniesController {
 
-  // Read
+  /**
+  * Get all companies from database
+  */
   static async getAll(ctx: Context) {
     const companies = await collection.find().sort({ Name: 1 }).toArray();
     ctx.body = companies;
@@ -39,15 +41,15 @@ export class CompaniesController {
   }
 
   static async updateOne(ctx: Context) {
-    const {email, name} = ctx.request.body;
+    const {Name, Date} = ctx.request.body;
     const result = await collection.updateOne(
       {
         '_id': new ObjectId(ctx.params.id)
       },
       { 
         $set: {
-        "email": email as string,
-        "name": name as string
+          "Name": Name as string,
+          "Date": Date as string
         }
       }
     );
