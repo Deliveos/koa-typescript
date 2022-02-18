@@ -18,7 +18,7 @@ router.post('/', async (ctx: Context) => {
     "Role": Role as string || "user",
     "Password": Password as string
   });
-  if (result.acknowledged == true) {
+  if (result.insertedId !== null && result.insertedId !== undefined) {
     ctx.status = 201;
     const token = jwt.sign(
       {
@@ -28,6 +28,8 @@ router.post('/', async (ctx: Context) => {
       process.env.SECRET_KEY?.toString() as Secret
     );
     ctx.body = { token };
+  } else {
+    ctx.status = 400;
   }
 });
 
