@@ -9,25 +9,23 @@ const router = new Router();
 const database = client.db("Q-Delivery");
 const collection = database.collection<User>("users");
 
-router.prefix('/register');
+router.prefix('/login');
 
 router.post('/', async (ctx: Context) => {
-  const { Name, Role, Password } = ctx.request.body;
-  const result = await collection.insertOne({
-    "Name": Name as string,
-    "Role": Role as string || "user",
-    "Password": Password as string
-  });
-  if (result.acknowledged == true) {
-    ctx.status = 201;
+  const { Name, Password } = ctx.request.body;
+  const user = await collection.findOne({ Name, Password });
+  if (user !== null) {
+    ctx.status = 200;
     const token = jwt.sign(
       {
         Name,
-        Role
+        "Role": user.Role
       }, 
       process.env.SECRET_KEY?.toString() as Secret
     );
     ctx.body = { token };
+  } else {
+    ctx.status = 404;
   }
 });
 
