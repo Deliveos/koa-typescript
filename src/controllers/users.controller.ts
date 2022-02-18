@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import {client} from "../config/db.config";
 import { User } from "../models/user.model";
 
-const database = client.db("q-delivery");
+const database = client.db("Q-Delivery")
 const collection = database.collection<User>("users");
 
 export class UserController {
