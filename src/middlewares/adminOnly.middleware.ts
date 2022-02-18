@@ -6,17 +6,21 @@ import { logger } from '../utils/logger';
 
 const adminOnly = async (ctx: Context, next: Next) => {
   if(ctx.header.authorization !== undefined) {
-    const jwtString =  jwt.verify(ctx.header.authorization, process.env.SECRET_KEY as Secret) as string;
-    logger.log('info', jwtString);
-    const decodedToken = JSON.parse(jwtString);
-    const database = client.db("Q-Delivery");
-    const users = database.collection<User>("users");
-    const user = await users.findOne({ _id: decodedToken.Id, Name: decodedToken.Name })
-    if (user !== null && user.Role.toLowerCase() === "admin") {
-      next();
-    } else {
-      ctx.status = 403;
+    try {
+      jwt.verify(ctx.header.authorization, process.env.SECRET_KEY as Secret) as string;
+      const decodedToken = JSON.parse(jwt.decode(ctx.header.authorization) as string);
+      const database = client.db("Q-Delivery");
+      const users = database.collection<User>("users");
+      const user = await users.findOne({ _id: decodedToken.Id, Name: decodedToken.Name })
+      if (user !== null && user.Role.toLowerCase() === "admin") {
+        next();
+      } else {
+        ctx.status = 403;
+      }
+    } catch (e) {
+      logger.log('error', e);
     }
+    
   } else ctx.status = 401;
 };
 
