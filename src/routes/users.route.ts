@@ -9,9 +9,6 @@ router.prefix('/users');
 router.get('/', UserController.getAll);
 router.get('/:id', UserController.getOne);
 
-// Insert
-router.post('/', UserController.insertOne);
-
 // Update
 router.patch('/:id', UserController.updateOne);
 
