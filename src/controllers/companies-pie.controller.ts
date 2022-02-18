@@ -7,7 +7,7 @@ import { User } from "../models/user.model";
 const database = client.db("Q-Delivery")
 const collection = database.collection("events");
 
-export class HomeController {
+export class CompaniesPieController {
 
   // Read
   static async getAll(ctx: Context) {
@@ -17,10 +17,17 @@ export class HomeController {
     const ordersByCompanySuccess = collection.aggregate([
       { 
         $group: {
-          "_id": { "id": "$OrderId" },
+          "_id": { "id": "$OrderId.Id" },
           "Company": {"$max": "$DeliveryCompanyId.Id"},
-          "type": {"$max": "$type"},
-        } 
+          "type": { "$max": "$type" },
+          "WeightKg": { "$max": "$WeightKg" },
+          "ExpectingPriceTenge": { "$max": "$ExpectingPriceTenge" },
+          "ExpectingDeliveryDate": { "$max": "$ExpectingDeliveryDate" },
+          "Date": { "$max": "$Date" },
+          "Client": { "$max": "$ClientId.Id" },
+          "FromLocationId": { "$max": "$FromLocationId" },
+          "ToLocationId": { "$max": "$ToLocationId" },
+        },
       },
       {
         $match: {
