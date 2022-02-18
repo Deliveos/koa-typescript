@@ -10,11 +10,8 @@ export class UserController {
 
   // Read
   static async getAll(ctx: Context) {
-    const users = collection.find();
-    const res = await users.toArray();
-    console.log(res);
-    
-    ctx.body = res;
+    ctx.body = await collection.find().toArray();
+    ctx.status = 200;
   }
 
   static async getOne(ctx: Context) {
