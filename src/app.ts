@@ -22,4 +22,6 @@ app.use(router.routes());
 // APP START
 app.listen(config.PORT, () => {
   console.log(`Server has been started on port ${config.PORT}`);
+  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+  
 });

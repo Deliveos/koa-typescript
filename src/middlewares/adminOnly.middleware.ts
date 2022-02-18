@@ -7,8 +7,7 @@ import { logger } from '../utils/logger';
 const adminOnly = async (ctx: Context, next: Next) => {
   if(ctx.header.authorization !== undefined) {
     const jwtString =  jwt.verify(ctx.header.authorization, process.env.SECRET_KEY as Secret) as string;
-    // logger.log('info', jwtString);
-    console.log(jwtString);
+    logger.log('info', jwtString);
     const decodedToken = JSON.parse(jwtString);
     const database = client.db("Q-Delivery");
     const users = database.collection<User>("users");
