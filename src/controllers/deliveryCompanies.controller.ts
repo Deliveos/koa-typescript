@@ -3,15 +3,15 @@ import { Int32, ObjectId } from "mongodb";
 import { client } from "../config/db.config";
 import { Company } from "../models/deliveryCompany.model";
 
-const database = client.db("q-delivery");
+const database = client.db("Q-Delivery");
 const collection = database.collection<Company>("deliveryCompanies");
 
 export class CompaniesController {
 
   // Read
   static async getAll(ctx: Context) {
-    const events = collection.find();
-    const res = await events.toArray();
+    const companies = collection.find();
+    const res = await companies.toArray();
     console.log(res);
     
     ctx.body = res;
