@@ -14,7 +14,7 @@ const adminOnly = async (ctx: Context, next: Next) => {
       const user = await users.findOne({ _id: new ObjectId(token.Id), Name: token.Name })
       if (user !== null && user.Role.toLowerCase() === "admin") {
         console.log("NEXT");
-        next();
+        await next();
       } else {
         console.log(403);
         ctx.status = 403;
