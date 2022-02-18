@@ -3,11 +3,13 @@ import Router from 'koa-router';
 import usersRoute from './users.route';
 import eventsRoute from './events.route';
 import ordersRoute from './orders.route';
+import ananlyticsRoute from './analytics.route';
 
 const router = new Router();
 
 router.use(eventsRoute.routes());
 router.use(ordersRoute.routes());
 router.use(usersRoute.routes());
+router.use(ananlyticsRoute.routes());
 
 export default router;

@@ -4,13 +4,19 @@ import { client } from "../config/db.config";
 import { User } from "../models/user.model";
 
 const database = client.db("Q-Delivery")
-const collection = database.collection<User>("users");
+const collection = database.collection("events");
 
 export class HomeController {
 
   // Read
   static async getAll(ctx: Context) {
-    const users = collection.find();
+    const users = collection.aggregate([ 
+      { 
+        $group: {
+          "_id": { $first: "$DeliveryCompanyId" } 
+        } 
+      }
+    ]);
     const res = await users.toArray();
     console.log(res);
     
