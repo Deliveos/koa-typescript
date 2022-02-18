@@ -1,20 +1,17 @@
 import { Context } from "koa";
 import { Int32, ObjectId } from "mongodb";
 import { client } from "../config/db.config";
-import { DeliveryCompany } from "../models/deliveryCompany.model";
+import { Company } from "../models/deliveryCompany.model";
 
-const database = client.db("q-delivery");
-const collection = database.collection<DeliveryCompany>("deliveryCompanies");
+const database = client.db("Q-Delivery");
+const collection = database.collection<Company>("deliveryCompanies");
 
-export class DeliveryCompaniesController {
+export class CompaniesController {
 
   // Read
   static async getAll(ctx: Context) {
-    const events = collection.find();
-    const res = await events.toArray();
-    console.log(res);
-    
-    ctx.body = res;
+    const companies = await collection.find().sort({ Name: 1 }).toArray();
+    ctx.body = companies;
   }
 
   static async getOne(ctx: Context) {

@@ -1,21 +1,20 @@
 import Router from 'koa-router';
-import { DeliveryCompaniesController } from '../controllers/deliveryCompanies.controller';
-import { DeliveryCompany } from '../models/deliveryCompany.model';
+import { CompaniesController } from '../controllers/deliveryCompanies.controller';
 
 const router = new Router();
 
-router.prefix('/delivery-companies');
+router.prefix('/companies');
 
 // Get
-router.get('/', DeliveryCompaniesController.getAll);
-router.get('/:id', DeliveryCompaniesController.getOne);
+router.get('/', CompaniesController.getAll);
+router.get('/:id', CompaniesController.getOne);
 
 // Insert
-router.post('/', DeliveryCompaniesController.insertOne);
+router.post('/', CompaniesController.insertOne);
 
 // Update
-router.patch('/:id', DeliveryCompaniesController.updateOne);
+router.patch('/:id', CompaniesController.updateOne);
 
 // Delete
-router.delete('/:id', DeliveryCompaniesController.deleteOne);
+router.delete('/:id', CompaniesController.deleteOne);
 export default router;

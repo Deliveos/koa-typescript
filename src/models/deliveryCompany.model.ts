@@ -1,6 +1,6 @@
 import { Int32, ObjectId } from "mongodb";
 
-interface DeliveryCompany {
+interface Company {
   _id: ObjectId | null,
   DeliveryCompanyId: {
     Id: Int32
@@ -9,4 +9,4 @@ interface DeliveryCompany {
   Date: String;
 }
 
-export { DeliveryCompany };
+export { Company };
