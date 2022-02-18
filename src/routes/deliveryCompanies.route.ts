@@ -1,6 +1,5 @@
 import Router from 'koa-router';
 import { DeliveryCompaniesController } from '../controllers/deliveryCompanies.controller';
-import { DeliveryCompany } from '../models/deliveryCompany.model';
 
 const router = new Router();
 
