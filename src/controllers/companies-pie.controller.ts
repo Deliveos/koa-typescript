@@ -7,7 +7,7 @@ import { User } from "../models/user.model";
 const database = client.db("Q-Delivery")
 const collection = database.collection("events");
 
-export class CompaniesPieController {
+export class HomeController {
 
   // Read
   static async getAll(ctx: Context) {
@@ -17,17 +17,10 @@ export class CompaniesPieController {
     const ordersByCompanySuccess = collection.aggregate([
       { 
         $group: {
-          "_id": { "id": "$OrderId.Id" },
+          "_id": { "id": "$OrderId" },
           "Company": {"$max": "$DeliveryCompanyId.Id"},
-          "type": { "$max": "$type" },
-          "WeightKg": { "$max": "$WeightKg" },
-          "ExpectingPriceTenge": { "$max": "$ExpectingPriceTenge" },
-          "ExpectingDeliveryDate": { "$max": "$ExpectingDeliveryDate" },
-          "Date": { "$max": "$Date" },
-          "Client": { "$max": "$ClientId.Id" },
-          "FromLocationId": { "$max": "$FromLocationId" },
-          "ToLocationId": { "$max": "$ToLocationId" },
-        },
+          "type": {"$max": "$type"},
+        } 
       },
       {
         $match: {
@@ -43,8 +36,39 @@ export class CompaniesPieController {
       },
     ]);
 
-    var res = await ordersByCompanySuccess.toArray();
+    const ordersByCompanyFail = collection.aggregate([
+      { 
+        $group: {
+          "_id": { "id": "$OrderId" },
+          "Company": {"$max": "$DeliveryCompanyId.Id"},
+          "type": {"$max": "$type"},
+        } 
+      },
+      {
+        $match: {
+          "type": event_typeFail?.name,
+        }
+      },
+      { 
+        $group: {
+          "_id": { "id": "$Company" },
+          "countFails": { "$sum": 1 },
+          // "countFailed": { "$sum": "$countFailed" },
+        } 
+      },
+    ]);
 
+    var res = await ordersByCompanySuccess.toArray();
+    var fails = await ordersByCompanyFail.toArray();
+
+    res.map((doc) => {
+      for (let i = 0; i < fails.length; i++) {
+        if (doc._id.id === fails[i]._id.id) {
+          doc['countFails'] = fails[i].countFails
+        }        
+      }
+
+    });
 
     for (let i = 0; i < res.length; i++) {
       const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": { "Id": res[i]._id.id },});
