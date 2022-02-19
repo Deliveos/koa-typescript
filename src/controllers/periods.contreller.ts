@@ -13,46 +13,55 @@ export class PeriodsController {
   static async getAll(ctx: Context) {
     var event_typeSuccess = await database.collection<EventType>('event_types').findOne({ "index": 6 });
     var currentDate = new Date();
+
+    var periodDate = ctx.request.query.period;    
     
-    const ordersByCompanySuccess = collection.aggregate([
-      { 
-        $group: {
-          "_id": { "id": "$OrderId.Id" },
-          "Company": {"$max": "$DeliveryCompanyId.Id"},
-          "type": { "$first": event_typeSuccess?.name },
-          "Date": { "$max": "$Date" },
-        },
-      },
+    const ordersByPeriod = collection.aggregate([
       {
-        $project: {
-          _id: true,
-          Company: true,
-          Date: true,
-          isBetween: {
-            $and: [{
-              $lt: [
-                new Date("$Date"),
-                currentDate
+        $group: {
+          "_id": null,
+          "21_30_days": {
+            $sum: {
+              $cond: [
+                { $and: [
+                  { $gte: [new Date("$Date"), new Date().setDate(new Date().getDay()-30)] },
+                  { $lte: [new Date("$Date"), new Date().setDate(new Date().getDay()-21)] }
+                ] }, 1, 0
               ]
-            },
-            {
-              $gt: [
-                new Date("$Date"),
-                currentDate.setMonth(currentDate.getMonth() - 1)
+            }
+          },
+          "14_21_days": {
+            $sum: {
+              $cond: [
+                { $and: [
+                  { $gte: [new Date("$Date"), new Date().setDate(new Date().getDay()-21)] },
+                  { $lte: [new Date("$Date"), new Date().setDate(new Date().getDay()-14)] }
+                ] }, 1, 0
               ]
-            }]
+            }
+          },
+          "7_14_days": {
+            $sum: {
+              $cond: [
+                { $and: [
+                  { $gte: [new Date("$Date"), new Date().setDate(new Date().getDay()-14)] },
+                  { $lte: [new Date("$Date"), new Date().setDate(new Date().getDay()-7)] }
+                ] }, 1, 0
+              ]
+            }
+          },
+          "1_7_days": {
+            $sum: {
+              $cond: [
+                { $gte: [new Date("$Date"), new Date().setDate(new Date().getDay()-7)] }, 1, 0
+              ]
+            }
           }
         }
       }
-    ]);
+    ]).limit(10);
 
-    var res = await ordersByCompanySuccess.toArray();
-
-    for (let i = 0; i < res.length; i++) {
-      const CompanyName = await database.collection('deliveryCompanies').findOne({ "DeliveryCompanyId": res[i]._id.id });
-      res[i]['FromLocationName'] = CompanyName?.Name;
-    }
-        
+    var res = await ordersByPeriod.toArray();
     ctx.body = res;
   }
 }
